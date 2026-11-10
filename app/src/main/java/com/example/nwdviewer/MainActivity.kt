@@ -14,23 +14,26 @@ class MainActivity : AppCompatActivity() {
         val webView = WebView(this)
         setContentView(webView)
 
-        webView.webViewClient = WebViewClient()
+        // Настраиваем клиент для обработки переходов внутри WebView
+        webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                view?.loadUrl(url ?: "")
+                return true
+            }
+        }
         
         val settings = webView.settings
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
         settings.databaseEnabled = true
+        settings.allowFileAccess = true
+        settings.allowContentAccess = true
         settings.cacheMode = WebSettings.LOAD_DEFAULT
         settings.loadWithOverviewMode = true
         settings.useWideViewPort = true
         settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
 
-        // Убираем маркер WebView из User-Agent, чтобы сайт не блокировал загрузку
-        var userAgent = settings.userAgentString
-        userAgent = userAgent.replace("; wv", "")
-        settings.userAgentString = userAgent
-
-        // Включаем куки для авторизации
+        // Включаем куки для корректной авторизации Autodesk
         val cookieManager = CookieManager.getInstance()
         cookieManager.setAcceptCookie(true)
         cookieManager.setAcceptThirdPartyCookies(webView, true)
