@@ -25,13 +25,17 @@ class MainActivity : AppCompatActivity() {
         settings.useWideViewPort = true
         settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
 
-        // Самое главное для сайтов с авторизацией и сложными скриптами (Autodesk):
-        // Разрешаем использование куки и сторонних куки в WebView
+        // Убираем маркер WebView из User-Agent, чтобы сайт не блокировал загрузку
+        var userAgent = settings.userAgentString
+        userAgent = userAgent.replace("; wv", "")
+        settings.userAgentString = userAgent
+
+        // Включаем куки для авторизации
         val cookieManager = CookieManager.getInstance()
         cookieManager.setAcceptCookie(true)
         cookieManager.setAcceptThirdPartyCookies(webView, true)
 
-        // Загружаем сайт прямо внутри приложения
+        // Загружаем сайт
         webView.loadUrl("https://viewer.autodesk.com/")
     }
 }
