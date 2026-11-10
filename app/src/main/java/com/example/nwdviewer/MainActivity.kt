@@ -13,23 +13,19 @@ class MainActivity : AppCompatActivity() {
         val webView = WebView(this)
         setContentView(webView)
 
-        // Настраиваем WebViewClient, чтобы все переходы открывались внутри приложения
-        webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                view?.loadUrl(url ?: "")
-                return true
-            }
-        }
+        // Оставляем стандартный клиент, чтобы WebView сам корректно обрабатывал все запросы и кэш
+        webView.webViewClient = WebViewClient()
         
-        // Включаем необходимые параметры для работы сложных веб-приложений (как Autodesk Viewer)
+        // Включаем настройки для корректной работы Autodesk Viewer
         val settings = webView.settings
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
+        settings.cacheMode = WebSettings.LOAD_DEFAULT // Используем стандартный кэш
         settings.loadWithOverviewMode = true
         settings.useWideViewPort = true
         settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
 
-        // Загружаем сайт внутри приложения
+        // Загружаем сайт
         webView.loadUrl("https://viewer.autodesk.com/")
     }
 }
